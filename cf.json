@@ -1,0 +1,115 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+      
+      "myvpc": {
+        "Type": "AWS::EC2::VPC",
+        "Properties": {
+          "CidrBlock": "10.0.0.0/24"
+        }
+      },
+      
+      "prisub": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": "ap-south-1a",
+          "VpcId": { "Ref": "myvpc" },
+          "CidrBlock": "10.0.0.0/25"
+        }
+      },
+      
+      "pubsub": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": "ap-south-1a",
+          "VpcId": 
+          { "Ref": "myvpc" },
+          "CidrBlock": "10.0.0.128/25"
+        }
+      },
+      
+      "prirtb": {
+        "Type": "AWS::EC2::RouteTable",
+        "Properties": {
+          "VpcId": 
+          { "Ref": "myvpc" }
+        }
+      },
+      
+      "pubrtb": {
+        "Type": "AWS::EC2::RouteTable",
+        "Properties": {
+          "VpcId": 
+          { "Ref": "myvpc" }
+        }
+      },
+      
+      "myigw": {
+        "Type": "AWS::EC2::InternetGateway"
+      },
+      "AttachGateway": {
+        "Type": "AWS::EC2::VPCGatewayAttachment",
+        "Properties": {
+          "VpcId": 
+          { "Ref": "myvpc" },
+          "InternetGatewayId": { "Ref": "myigw" }
+        }
+      },
+      
+      "priassoc": {
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties": {
+          "SubnetId": 
+          { "Ref": "prisub" },
+          "RouteTableId": 
+          { "Ref": "prirtb" }  
+        }
+      },
+      
+      "pubassoc": {
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties": {
+          "SubnetId": 
+          { "Ref": "pubsub" },
+          "RouteTableId": 
+          { "Ref": "pubrtb" }
+        }
+      },
+      
+      "route": {
+        "Type": "AWS::EC2::Route",
+        "Properties": {
+          "RouteTableId": 
+          { "Ref": "pubrtb" },
+          "DestinationCidrBlock": "0.0.0.0/0",
+          "GatewayId": 
+          { "Ref": "myigw" }
+        }
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+
+    },
+    "Outputs": {
+
+    }
+}
